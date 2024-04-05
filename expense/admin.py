@@ -10,16 +10,16 @@ class ExpenseTypesAdmin(admin.ModelAdmin):
     search_fields = ('expense_type',)
 
 class ExpenseAdmin(admin.ModelAdmin):
-    list_display = ('expense_id', 'paid_by', 'amount', 'expense_type', 'description', 'date')
-    list_filter = ('paid_by', 'expense_type')
+    list_display = ('expense_id', 'paid_by', 'amount', 'description', 'date')
+    list_filter = ('paid_by',)
     search_fields = ('paid_by__name', 'description')
 
-class SplitExpenseAdmin(admin.ModelAdmin):
-    list_display = ('split_expense_id', 'expense', 'amount', 'user')
-    list_filter = ('expense__paid_by', 'user')
-    search_fields = ('expense__paid_by__name', 'user__name')
+# class SplitExpenseAdmin(admin.ModelAdmin):
+#     list_display = ('split_expense_id', 'expense', 'user', 'expense_type', 'amount')
+#     list_filter = ('expense__paid_by', 'user', 'expense_type')
+#     search_fields = ('expense__paid_by__name', 'user__name')
 
 admin.site.register(User, UserAdmin)
 admin.site.register(ExpenseTypes, ExpenseTypesAdmin)
 admin.site.register(Expense, ExpenseAdmin)
-admin.site.register(SplitExpense, SplitExpenseAdmin)
+admin.site.register(SplitExpense)
