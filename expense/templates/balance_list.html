@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Balance List</title>
+</head>
+<body>
+    <h1>Balance List for {{ user.name }}</h1>
+    <ul>
+        {% for balance in balances %}
+            <li>{{ balance.user.name }} owes {{ user.name }}: {{ balance.amount }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

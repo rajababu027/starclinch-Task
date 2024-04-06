@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Expense</title>
+</head>
+<body>
+    <h1>Add Expense</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="amount">Amount:</label>
+        <input type="text" name="amount" id="amount">
+        <br>
+        <label for="expense_type">Expense Type:</label>
+        <select name="expense_type" id="expense_type">
+            <option value="EQUAL">Equal</option>
+            <option value="PERCENT">Percent</option>
+            <option value="EXACT">Exact</option>
+        </select>
+        <br>
+        <label for="participants">Select Participants:</label><br>
+        {% for user in users %}
+            <input type="checkbox" name="participants" value="{{ user.id }}">{{ user.name }}<br>
+        {% endfor %}
+        <br>
+        <div id="percentages" style="display: none;">
+            <label for="percentages">Enter Percentages (comma-separated):</label>
+            <input type="text" name="percentages" id="percentages">
+        </div>
+        <div id="shares" style="display: none;">
+            <label for="shares">Enter Shares (comma-separated):</label>
+            <input type="text" name="shares" id="shares">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    
+    <script>
+        document.getElementById('expense_type').addEventListener('change', function() {
+            var type = this.value;
+            if (type === 'PERCENT') {
+                document.getElementById('percentages').style.display = 'block';
+                document.getElementById('shares').style.display = 'none';
+            } else if (type === 'EXACT') {
+                document.getElementById('percentages').style.display = 'none';
+                document.getElementById('shares').style.display = 'block';
+            } else {
+                document.getElementById('percentages').style.display = 'none';
+                document.getElementById('shares').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
