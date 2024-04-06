@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-4us(b%er^)q(c^c^k))na(cffpip98(1&8th7g%z-4v)nx#2k)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*","51.20.8.9"]
 
 ROOT_URLCONF = 'expense.urls'
 LOGIN_REDIRECT_URL = 'add_expense'
