@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
 from .models import User, Expense, ExpenseParticipant
 from django.db.models import Sum
+# from django.contrib.auth.decorators import login_required
+
 
 def add_expense(request):
     users = User.objects.all()
     if request.method == 'POST':
-        payer_id = request.user.id
+        payer_id = request.POST['paid_by']
         amount = float(request.POST['amount'])
         expense_type = request.POST['expense_type']
         participants = request.POST.getlist('participants')

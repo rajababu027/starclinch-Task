@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+ROOT_URLCONF = 'expense.urls'
+LOGIN_REDIRECT_URL = 'add_expense'
 # Application definition
 
 INSTALLED_APPS = [
