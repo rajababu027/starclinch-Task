@@ -1,33 +1,3 @@
-# from urllib import response
-# from django.shortcuts import render, redirect
-# from .forms import ExpenseForm, SplitExpenseForm
-
-
-# def create_expense(request):
-#     if request.method == 'POST':
-#         form = ExpenseForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#     else:
-#         form = ExpenseForm()
-#     return render(request, 'expense_form.html', {'form': form})
-
-
-# def create_split_expense(request):
-#     if request.method == 'POST':
-#         form = SplitExpenseForm(request.POST)
-#         if form.is_valid():
-#             form = form(commit=False)
-#             expense_type = form.cleaned_data['expense_type']
-#             form.save()
-#     else:
-#         form = SplitExpenseForm()
-#     return render(request, 'split_expense_form.html', {'form': form})
-
-
-
-
-
 from django.shortcuts import render, redirect
 from .models import User, Expense, ExpenseParticipant
 from django.db.models import Sum
@@ -78,26 +48,42 @@ def split_exact(expense, participants, shares):
         ExpenseParticipant.objects.create(expense=expense, user_id=participant_id, share=share)
 
 
+def all_users_balances(request):
+    users = User.objects.all()
+    balances_data = {}
+
+    for user in users:
+        expenses_paid = ExpenseParticipant.objects.filter(user=user).values('expense__payer').annotate(total_share=Sum('share'))
+        expenses_owed = ExpenseParticipant.objects.filter(expense__payer=user).values('user').annotate(total_share=Sum('share'))
+        
+        balance = 0
+        for expense in expenses_paid:
+            balance -= expense['total_share']
+        
+        for expense in expenses_owed:
+            balance += expense['total_share']
+        
+        balances_data[user] = balance
+    
+    balances = [{'user': user, 'amount': amount} for user, amount in balances_data.items() if amount != 0]
+    
+    return render(request, 'balance_list.html', {'balances': balances})
+
+
 def show_balances(request, user_id):
-    user = User.objects.all()
-    # user = User.objects.get(id=user_id)
-    
-    # Calculate total shares paid by the user
+    user = User.objects.get(id=user_id)
     expenses_paid = ExpenseParticipant.objects.filter(user=user).values('expense__payer').annotate(total_share=Sum('share'))
-    
-    # Calculate total shares owed by the user
     expenses_owed = ExpenseParticipant.objects.filter(expense__payer=user).values('user').annotate(total_share=Sum('share'))
-    
     balance_data = {}
-    
-    # Calculate balances for shares paid
     for expense in expenses_paid:
         balance_data[expense['expense__payer']] = balance_data.get(expense['expense__payer'], 0) - expense['total_share']
     
-    # Calculate balances for shares owed
     for expense in expenses_owed:
         balance_data[user] = balance_data.get(user, 0) + expense['total_share']
     
     balances = [{'user': u, 'amount': amount} for u, amount in balance_data.items() if amount != 0]
     
-    return render(request, 'balance_list.html', {'user': user, 'balances': balances})
+    return render(request, 'user_balance.html', {'user': user, 'balances': balances})
+
+
+
