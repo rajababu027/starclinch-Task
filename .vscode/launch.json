@@ -9,7 +9,7 @@
             "type": "debugpy",
             "request": "launch",
             "args": [
-                "runserver"
+                "runserver", "8002"
             ],
             "django": true,
             "autoStartBrowser": false,
